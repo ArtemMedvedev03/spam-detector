@@ -1,0 +1,25 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS models (
+    id INTEGER PRIMARY KEY,
+    model_key TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    accuracy REAL NOT NULL CHECK (accuracy BETWEEN 0 AND 1),
+    precision REAL NOT NULL CHECK (precision BETWEEN 0 AND 1),
+    recall REAL NOT NULL CHECK (recall BETWEEN 0 AND 1),
+    f1 REAL NOT NULL CHECK (f1 BETWEEN 0 AND 1),
+    test_count INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS emails (
+    id INTEGER PRIMARY KEY,
+    body TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS predictions (
+    id INTEGER PRIMARY KEY,
+    email_id INTEGER NOT NULL REFERENCES emails(id),
+    model_id INTEGER NOT NULL REFERENCES models(id),
+    label INTEGER NOT NULL CHECK (label IN (0, 1)),
+    spam_score REAL NOT NULL CHECK (spam_score BETWEEN 0 AND 1),
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
